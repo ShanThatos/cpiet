@@ -2,17 +2,17 @@
 ## CPiet
 ___
 
-I don't know about you but my creative outlet is Piet programs: [http://www.dangermouse.net/esoteric/piet.html](http://www.dangermouse.net/esoteric/piet.html)
+I don't know about you but my creative outlet is Piet programming: [http://www.dangermouse.net/esoteric/piet.html](http://www.dangermouse.net/esoteric/piet.html)
 
 Ever wanted to create complex programs with Piet -- but you just can't get the hang of it? No problem... 
 
 CPiet is a C-based language that compiles to Piet. 
 
 #### Syntax
-The barebones syntax is here: [./spec.json](spec.json)
+The barebones syntax is defined here: [./spec.json](spec.json)
 Several standard libraries have been made in the [./lib](lib/) directory.
 
-Syntax Example:
+Fibonacci Example:
 ```python
 #include "lib/common.cpiet"
 
