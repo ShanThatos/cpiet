@@ -1,6 +1,5 @@
 #include "lib/common.cpiet"
 
-
 FIB_CACHE_SIZE = 100
 FIB_CACHE = calloc(FIB_CACHE_SIZE)
 func fib(n) {
@@ -14,7 +13,6 @@ func fib(n) {
         FIB_CACHE[n] = result
     return result
 }
-
 
 func main() {
     print("Fibonacci numbers:\n")

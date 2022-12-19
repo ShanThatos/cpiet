@@ -16,11 +16,12 @@ Fibonacci Example:
 ```python
 #include "lib/common.cpiet"
 
-FIB_CACHE = calloc(100)
+FIB_CACHE_SIZE = 100
+FIB_CACHE = calloc(FIB_CACHE_SIZE)
 func fib(n) {
     if (n < 2) 
         return 1
-    if (n < sizeof(FIB_CACHE) and FIB_CACHE[n] != 0) 
+    if (n < FIB_CACHE_SIZE and FIB_CACHE[n] != 0) 
         return FIB_CACHE[n]
     
     result = fib(n - 1) + fib(n - 2)
@@ -28,7 +29,6 @@ func fib(n) {
         FIB_CACHE[n] = result
     return result
 }
-
 
 func main() {
     print("Fibonacci numbers:\n")
