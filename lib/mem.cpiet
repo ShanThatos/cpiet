@@ -1,0 +1,90 @@
+#include "./math.cpiet"
+#include "./string.cpiet"
+
+#define HEAP_SIZE 200
+#define HEAP_BLOCK_METADATA_SIZE 2
+
+HEAP[HEAP_SIZE]
+
+HEAP[0] = HEAP_BLOCK_METADATA_SIZE
+HEAP[1] = 1
+
+HEAP[HEAP_BLOCK_METADATA_SIZE] = HEAP_SIZE - HEAP_BLOCK_METADATA_SIZE
+HEAP[HEAP_BLOCK_METADATA_SIZE + 1] = 0
+
+func malloc(size) {
+    if (size < 0) {
+        string_printc("\nError: negative malloc\n")
+        exit()
+    }
+    if (size == 0) 
+        return HEAP + HEAP_BLOCK_METADATA_SIZE
+    
+    actual_size = size + HEAP_BLOCK_METADATA_SIZE
+
+    current = 0
+    while (current < HEAP_SIZE) {
+        if (HEAP[current] >= actual_size and HEAP[current + 1] == 0) 
+            break
+        current += HEAP[current]
+    }
+    
+    if (current + actual_size > HEAP_SIZE) {
+        string_printc("\nError: out of memory\n")
+        exit()
+    }
+
+    if (HEAP[current] > actual_size) {
+        next_block_index = current + actual_size
+        HEAP[next_block_index] = HEAP[current] - actual_size
+        HEAP[next_block_index + 1] = 0
+    }
+
+    HEAP[current] = actual_size
+    HEAP[current + 1] = 1
+    return HEAP + current + HEAP_BLOCK_METADATA_SIZE
+}
+
+func calloc(size) {
+    ptr = malloc(size)
+    fill(ptr, 0)
+    return ptr
+}
+
+func free(ptr) {
+    if (sizeof(ptr) == 0)
+        return 0
+    
+    index = ptr - HEAP - HEAP_BLOCK_METADATA_SIZE
+    HEAP[index + 1] = 0
+    
+    next_block_index = index + HEAP[index]
+    while (next_block_index < HEAP_SIZE and HEAP[next_block_index + 1] == 0) {
+        new_block_size = HEAP[index] + HEAP[next_block_index]
+        HEAP[index] = new_block_size
+        next_block_index = index + new_block_size
+    }
+}
+
+func sizeof(ptr)
+    return HEAP[ptr - HEAP - HEAP_BLOCK_METADATA_SIZE] - HEAP_BLOCK_METADATA_SIZE
+
+func memcopy(ptr1, ptr2) {
+    copy_amount = min(sizeof(ptr1), sizeof(ptr2))
+    for (i = 0; i < copy_amount; i += 1) 
+        ptr2[i] = ptr1[i]
+}
+
+func fill(ptr, value) {
+    size = sizeof(ptr)
+    for (i = 0; i < size; i += 1)
+        ptr[i] = value
+}
+
+func resize(ptr, new_size) {
+    new_ptr = malloc(new_size)
+    memcopy(ptr, new_ptr)
+    free(ptr)
+    return new_ptr
+}
+

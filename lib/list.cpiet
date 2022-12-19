@@ -1,0 +1,49 @@
+#include "./mem.cpiet"
+#include "./math.cpiet"
+
+variadic func list(args) {
+    list_meta = malloc(2)
+    list_size = sizeof(args)
+    list_meta[0] = list_size
+    list_meta[1] = malloc(max(1, list_size))
+    memcopy(args, list_meta[1])
+    return list_meta
+}
+
+func list_add(list_meta, item) {
+    list_size = list_meta[0]
+    list = list_meta[1]
+    capacity = sizeof(list)
+    if (list_size == capacity) {
+        list = resize(list, capacity * 2)
+        list_meta[1] = list
+    }
+    list[list_size] = item
+    list_meta[0] = list_size + 1
+}
+
+func list_get(list_meta, index) {
+    return list_meta[1][index]
+}
+
+func list_length(list_meta) {
+    return list_meta[0]
+}
+
+func list_printn(list_meta) {
+    list_size = list_length(list_meta)
+    printc(91)
+    for (i = 0; i < list_size; i += 1) {
+        printn(list_get(list_meta, i))
+        if (i < list_size - 1) {
+            printc(44)
+            printc(32)
+        }
+    }
+    printc(93)
+}
+
+func list_free(list_meta) {
+    free(list_meta[1])
+    free(list_meta)
+}

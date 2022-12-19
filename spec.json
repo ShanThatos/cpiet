@@ -1,0 +1,202 @@
+{
+    "IMPORT": [
+        "REGEX_MATCH",
+        "#include\\s+\"((\\w+/|\\.\\./|\\./)*\\w+\\.cpiet)\""
+    ],
+    "DEFINE": [
+        "REGEX_MATCH", 
+        "#define\\s+([_a-zA-Z]\\w*)\\s+([0-9]+)\\b"
+    ],
+    "STRING": [
+        "REGEX_MATCH",
+        "\"(([^\"\\\\]|\\\\.)*)\""
+    ],
+    "ID": [
+        "REGEX_MATCH",
+        "[_a-zA-Z]\\w*\\b"
+    ],
+    "NUMBER": [
+        "REGEX_MATCH",
+        "([0-9]+)\\b"
+    ],
+
+    "builtin_function_call": [
+        "ONE_OF", [
+            ["printn", "(", "expression", ")"],
+            ["printc", "(", "expression", ")"],
+            ["getn", "(", ")"],
+            ["getc", "(", ")"],
+            ["exit", "(", ")"]
+        ]
+    ],
+    "function_call": [
+        "ONE_OF", [
+            [
+                "ID", "(", 
+                "OPTIONAL", [
+                    "expression",
+                    "REPEAT", [",", "expression"]
+                ],
+                ")"
+            ],
+            "builtin_function_call"
+        ]
+    ],
+
+    "exp_par": [ "(", "expression", ")" ],
+    "exp_not": [ "not", "exp_unit" ],
+    "exp_unit": [
+        "ONE_OF", [
+            "exp_par",
+            "exp_not",
+            "function_call",
+            "array_access",
+            "ID",
+            "NUMBER"
+        ]
+    ],
+    "exp_unary": [
+        "OPTIONAL", "-",
+        "exp_unit"
+    ],
+    "exp_mult": [
+        "exp_unary",
+        "REPEAT", [
+            "ONE_OF", ["*", "/", "%"],
+            "exp_unary"
+        ]
+    ],
+    "exp_add": [
+        "exp_mult",
+        "REPEAT", [
+            "ONE_OF", ["+", "-"],
+            "exp_mult"
+        ]
+    ],
+    "exp_comp": [
+        "exp_add",
+        "OPTIONAL", [
+            "ONE_OF", ["<=", "<", ">=", ">", "==", "!="],
+            "exp_add"
+        ]
+    ],
+    "exp_and": [
+        "exp_comp",
+        "REPEAT", ["and", "exp_comp"]
+    ],
+    "exp_or": [
+        "exp_and",
+        "REPEAT", ["or", "exp_and"]
+    ],
+    "expression": [
+        "exp_or"
+    ],
+
+    "assignment_normal": [
+        "ID", "=", "expression"
+    ],
+    "assignment_extended": [
+        "ID", 
+        "ONE_OF", ["+=", "-=", "*=", "/=", "%="], 
+        "expression"
+    ],
+    "assignment": [
+        "ONE_OF", [
+            "assignment_normal",
+            "assignment_extended"
+        ]
+    ],
+
+    "if_statement": [
+        "if", 
+        "exp_par", 
+        "statement",
+        "OPTIONAL", ["else", "statement"]
+    ],
+
+    "while_statement": [
+        "while", 
+        "exp_par", 
+        "statement"
+    ],
+
+    "for_initial_assignment": [
+        "OPTIONAL", [
+            "assignment_normal", 
+            "REPEAT", [
+                ",", "assignment_normal"
+            ]
+        ]
+    ],
+    "for_post_assignment": [
+        "OPTIONAL", [
+            "assignment", 
+            "REPEAT", [
+                ",", "assignment"
+            ]
+        ]
+    ],
+    "for_statement": [
+        "for", "(",
+        "for_initial_assignment", ";",
+        "expression", ";",
+        "for_post_assignment", ")", 
+        "statement"
+    ],
+
+    "statement_block": [
+        "{", 
+        "REPEAT", "statement",
+        "}"
+    ],
+    "statement": [
+        "ONE_OF", [
+            "break",
+            "continue",
+            "assignment",
+            "array_assignment",
+            "if_statement",
+            "while_statement",
+            "for_statement",
+            "statement_block",
+            ["return", "expression"],
+            "function_call"
+        ]
+    ],
+
+    "function_params": [
+        "OPTIONAL", [
+            "ID",
+            "REPEAT", [",", "ID"]
+        ]
+    ],
+    "function": [
+        "OPTIONAL", ["variadic"],
+        "func", "ID", 
+        "(", "function_params", ")", 
+        "statement"
+    ],
+
+    "array_declaration": [
+        "ID", "[", "NUMBER", "]"
+    ],
+    "array_assignment": [
+        "array_access", "=", "expression"
+    ],
+    "array_access": [
+        "ID", "[", "expression", "]", 
+        "REPEAT", [
+            "[", "expression", "]"
+        ]
+    ],
+
+    "program": [
+        "REPEAT", [
+            "ONE_OF", [
+                "function",
+                "statement",
+                "array_declaration"
+            ]
+        ]
+    ]
+}

@@ -1,0 +1,48 @@
+#include "lib/string.cpiet"
+#include "lib/list.cpiet"
+
+variadic func print(args) {
+    format = args[0]
+    format_length = string_length(format)
+
+    for (i = 0, j = 1; i < format_length; i += 1) {
+        ch = format[i]
+        if (ch == 37) {
+            i += 1
+            ch = format[i]
+            if (ch == 37) {
+                printc(37)
+                continue
+            }
+            arg = args[j]
+            j += 1
+            if (ch == 115)
+                string_printc(arg)
+            else if (ch == 100)
+                printn(arg)
+            else if (ch == 99)
+                printc(arg) 
+            else {
+                print("Error: invalid format string \"%s\"", format)
+                exit()
+            }
+        } else 
+            printc(ch)
+    }
+}
+
+func getline() {
+    line = list()
+    while (1) {
+        ch = getc()
+        if (ch == 10)
+            break
+        list_add(line, ch)
+    }
+    print("\r")
+    result = list_to_string(line)
+    list_free(line)
+    return result
+}
+
+

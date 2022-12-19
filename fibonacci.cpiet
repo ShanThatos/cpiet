@@ -1,0 +1,24 @@
+#include "lib/common.cpiet"
+
+
+FIB_CACHE = calloc(100)
+func fib(n) {
+    if (n < 2) 
+        return 1
+    if (n < sizeof(FIB_CACHE) and FIB_CACHE[n] != 0) 
+        return FIB_CACHE[n]
+    
+    result = fib(n - 1) + fib(n - 2)
+    if (n < FIB_CACHE_SIZE) 
+        FIB_CACHE[n] = result
+    return result
+}
+
+
+func main() {
+    print("Fibonacci numbers:\n")
+    for (i = 0; i < 40; i += 1) 
+        print("%d\n", fib(i))
+}
+
+main()

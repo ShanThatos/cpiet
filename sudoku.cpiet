@@ -1,0 +1,63 @@
+#include "lib/common.cpiet"
+
+
+func is_valid_num(board, r, c, n) {
+    for (i = 0; i < 9; i += 1) {
+        if (board[r][i] == n) 
+            return false
+        if (board[i][c] == n) 
+            return false
+    }
+
+    br = r / 3 * 3
+    bc = c / 3 * 3
+    for (i = 0; i < 3; i += 1) 
+        for (j = 0; j < 3; j += 1) 
+            if (board[br + i][bc + j] == n) 
+                return false
+
+    return true
+}
+
+func solve(board) {
+    found_empty = false
+    first_empty_r = -1
+    first_empty_c = -1
+
+    for (r = 0; r < 9 and not found_empty; r += 1) 
+        for (c = 0; c < 9 and not found_empty; c += 1) 
+            if (board[r][c] == 0) {
+                found_empty = true
+                first_empty_r = r
+                first_empty_c = c
+            }
+
+    if (not found_empty) {
+        print("Solved!")
+        exit()
+    } else {
+        for (n = 1; n <= 9; n += 1) {
+            if (is_valid_num(board, first_empty_r, first_empty_c, n)) {
+                board[first_empty_r][first_empty_c] = n
+                solve(board)
+                board[first_empty_r][first_empty_c] = 0
+            }
+        }
+    }
+}
+
+func main() {
+    print("Give me a board! ")
+    board = malloc(9)
+    for (r = 0; r < 9; r += 1) {
+        board[r] = malloc(9)
+        for (c = 0; c < 9; c += 1) {
+            board[r][c] = getn()
+            print("\nboard[%d][%d] = %d\n", r, c, board[r][c])
+        }
+    }
+
+    solve(board)
+}
+
+main()

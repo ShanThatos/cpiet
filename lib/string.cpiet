@@ -1,0 +1,54 @@
+#include "./mem.cpiet"
+#include "./list.cpiet"
+
+func string_with_size(n) {
+    s = malloc(n + 1) + 1
+    s[-1] = n
+    return s
+}
+
+func string_length(s) 
+    return s[-1]
+
+func string_printc(s) {
+    L = string_length(s)
+    for (i = 0; i < L; i += 1)
+        printc(s[i])
+}
+
+func string_equals(s1, s2) {
+    L1 = string_length(s1)
+    L2 = string_length(s2)
+    if (L1 != L2)
+        return 0
+    for (i = 0; i < L1; i += 1)
+        if (s1[i] != s2[i])
+            return 0
+    return 1
+}
+
+variadic func string_substring(args) {
+    s = args[0]
+    start = args[1]
+    if (sizeof(args) == 3)
+        end = args[2]
+    else 
+        end = string_length(s)
+    L = end - start
+    if (L < 0)
+        return ""
+
+    new_string = string_with_size(L)
+    for (i = 0; i < L; i += 1)
+        new_string[i] = s[start + i]
+    return new_string
+}
+
+func list_to_string(list_meta) {
+    L = list_length(list_meta)
+    new_string = string_with_size(L)
+    for (i = 0; i < L; i += 1)
+        new_string[i] = list_get(list_meta, i)
+    return new_string
+}
+

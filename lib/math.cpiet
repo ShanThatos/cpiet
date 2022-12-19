@@ -1,0 +1,27 @@
+
+
+func pow(pow_a, pow_b) {
+    result = 1
+    while (pow_b > 0) {
+        if (pow_b % 2) {
+            result *= pow_a
+            pow_b -= - 1
+        } else {
+            pow_a *= pow_a
+            pow_b /= 2
+        }
+    }
+    return result
+}
+
+func min(min_a, min_b) {
+    if (min_a < min_b)
+        return min_a
+    return min_b
+}
+
+func max(max_a, max_b) {
+    if (max_a > max_b)
+        return max_a
+    return max_b
+}
